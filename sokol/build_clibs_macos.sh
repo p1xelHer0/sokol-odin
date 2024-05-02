@@ -45,6 +45,7 @@ build_lib_arm64_release sokol_time        time/sokol_time_macos_arm64_metal_rele
 build_lib_arm64_release sokol_audio       audio/sokol_audio_macos_arm64_metal_release SOKOL_METAL
 build_lib_arm64_release sokol_debugtext   debugtext/sokol_debugtext_macos_arm64_metal_release SOKOL_METAL
 build_lib_arm64_release sokol_shape       shape/sokol_shape_macos_arm64_metal_release SOKOL_METAL
+build_lib_arm64_release sokol_imgui       imgui/sokol_imgui_macos_arm64_metal_release SOKOL_METAL
 build_lib_arm64_release sokol_gl          gl/sokol_gl_macos_arm64_metal_release SOKOL_METAL
 
 # ARM + Metal + Debug
@@ -56,6 +57,7 @@ build_lib_arm64_debug sokol_time          time/sokol_time_macos_arm64_metal_debu
 build_lib_arm64_debug sokol_audio         audio/sokol_audio_macos_arm64_metal_debug SOKOL_METAL
 build_lib_arm64_debug sokol_debugtext     debugtext/sokol_debugtext_macos_arm64_metal_debug SOKOL_METAL
 build_lib_arm64_debug sokol_shape         shape/sokol_shape_macos_arm64_metal_debug SOKOL_METAL
+build_lib_arm64_debug sokol_imgui         imgui/sokol_imgui_macos_arm64_metal_debug SOKOL_METAL
 build_lib_arm64_debug sokol_gl            gl/sokol_gl_macos_arm64_metal_debug SOKOL_METAL
 
 # x64 + Metal + Release
