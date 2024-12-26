@@ -90,7 +90,7 @@ foreign sokol_gfx_clib {
     update_image :: proc(img: Image, #by_ptr data: Image_Data)  ---
     append_buffer :: proc(buf: Buffer, #by_ptr data: Range) -> c.int ---
     query_buffer_overflow :: proc(buf: Buffer) -> bool ---
-    query_buffer_will_overflow :: proc(buf: Buffer, size: u64) -> bool ---
+    query_buffer_will_overflow :: proc(buf: Buffer, size: c.size_t) -> bool ---
     begin_pass :: proc(#by_ptr pass: Pass)  ---
     apply_viewport :: proc(#any_int x: c.int, #any_int y: c.int, #any_int width: c.int, #any_int height: c.int, origin_top_left: bool)  ---
     apply_viewportf :: proc(x: f32, y: f32, width: f32, height: f32, origin_top_left: bool)  ---
@@ -133,6 +133,17 @@ foreign sokol_gfx_clib {
     query_shader_defaults :: proc(#by_ptr desc: Shader_Desc) -> Shader_Desc ---
     query_pipeline_defaults :: proc(#by_ptr desc: Pipeline_Desc) -> Pipeline_Desc ---
     query_attachments_defaults :: proc(#by_ptr desc: Attachments_Desc) -> Attachments_Desc ---
+    query_buffer_size :: proc(buf: Buffer) -> c.size_t ---
+    query_buffer_type :: proc(buf: Buffer) -> Buffer_Type ---
+    query_buffer_usage :: proc(buf: Buffer) -> Usage ---
+    query_image_type :: proc(img: Image) -> Image_Type ---
+    query_image_width :: proc(img: Image) -> c.int ---
+    query_image_height :: proc(img: Image) -> c.int ---
+    query_image_num_slices :: proc(img: Image) -> c.int ---
+    query_image_num_mipmaps :: proc(img: Image) -> c.int ---
+    query_image_pixelformat :: proc(img: Image) -> Pixel_Format ---
+    query_image_usage :: proc(img: Image) -> Usage ---
+    query_image_sample_count :: proc(img: Image) -> c.int ---
     alloc_buffer :: proc() -> Buffer ---
     alloc_image :: proc() -> Image ---
     alloc_sampler :: proc() -> Sampler ---
@@ -225,7 +236,7 @@ Attachments :: struct {
 
 Range :: struct {
     ptr : rawptr,
-    size : u64,
+    size : c.size_t,
 }
 
 INVALID_ID :: 0
@@ -352,6 +363,7 @@ Features :: struct {
     mrt_independent_blend_state : bool,
     mrt_independent_write_mask : bool,
     storage_buffer : bool,
+    msaa_image_bindings : bool,
 }
 
 Limits :: struct {
@@ -680,7 +692,7 @@ Bindings :: struct {
 
 Buffer_Desc :: struct {
     _ : u32,
-    size : u64,
+    size : c.size_t,
     type : Buffer_Type,
     usage : Usage,
     data : Range,
@@ -1220,6 +1232,7 @@ Log_Item :: enum i32 {
     VALIDATE_IMAGEDESC_NO_MSAA_RT_SUPPORT,
     VALIDATE_IMAGEDESC_MSAA_NUM_MIPMAPS,
     VALIDATE_IMAGEDESC_MSAA_3D_IMAGE,
+    VALIDATE_IMAGEDESC_MSAA_CUBE_IMAGE,
     VALIDATE_IMAGEDESC_DEPTH_3D_IMAGE,
     VALIDATE_IMAGEDESC_RT_IMMUTABLE,
     VALIDATE_IMAGEDESC_RT_NO_DATA,
@@ -1373,6 +1386,7 @@ Log_Item :: enum i32 {
     VALIDATE_ABND_EXPECTED_IMAGE_BINDING,
     VALIDATE_ABND_IMG_EXISTS,
     VALIDATE_ABND_IMAGE_TYPE_MISMATCH,
+    VALIDATE_ABND_EXPECTED_MULTISAMPLED_IMAGE,
     VALIDATE_ABND_IMAGE_MSAA,
     VALIDATE_ABND_EXPECTED_FILTERABLE_IMAGE,
     VALIDATE_ABND_EXPECTED_DEPTH_IMAGE,
@@ -1431,7 +1445,7 @@ Commit_Listener :: struct {
 }
 
 Allocator :: struct {
-    alloc_fn : proc "c" (a0: u64, a1: rawptr) -> rawptr,
+    alloc_fn : proc "c" (a0: c.size_t, a1: rawptr) -> rawptr,
     free_fn : proc "c" (a0: rawptr, a1: rawptr),
     user_data : rawptr,
 }

@@ -293,7 +293,7 @@ Android_Tooltype :: enum i32 {
 }
 
 Touchpoint :: struct {
-    identifier : u64,
+    identifier : c.uintptr_t,
     pos_x : f32,
     pos_y : f32,
     android_tooltype : Android_Tooltype,
@@ -339,7 +339,7 @@ Event :: struct {
 
 Range :: struct {
     ptr : rawptr,
-    size : u64,
+    size : c.size_t,
 }
 
 Image_Desc :: struct {
@@ -354,7 +354,7 @@ Icon_Desc :: struct {
 }
 
 Allocator :: struct {
-    alloc_fn : proc "c" (a0: u64, a1: rawptr) -> rawptr,
+    alloc_fn : proc "c" (a0: c.size_t, a1: rawptr) -> rawptr,
     free_fn : proc "c" (a0: rawptr, a1: rawptr),
     user_data : rawptr,
 }
@@ -497,7 +497,7 @@ Desc :: struct {
     win32_console_utf8 : bool,
     win32_console_create : bool,
     win32_console_attach : bool,
-    html5_canvas_name : cstring,
+    html5_canvas_selector : cstring,
     html5_canvas_resize : bool,
     html5_preserve_drawing_buffer : bool,
     html5_premultiplied_alpha : bool,
