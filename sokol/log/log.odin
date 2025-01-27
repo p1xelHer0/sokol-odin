@@ -106,6 +106,8 @@ package sokol_log
 
 import "core:c"
 
+_ :: c
+
 SOKOL_DEBUG :: #config(SOKOL_DEBUG, ODIN_DEBUG)
 
 DEBUG :: #config(SOKOL_LOG_DEBUG, SOKOL_DEBUG)
@@ -167,6 +169,9 @@ when ODIN_OS == .Windows {
         when DEBUG { foreign import sokol_log_clib { "sokol_log_linux_x64_gl_debug.a" } }
         else       { foreign import sokol_log_clib { "sokol_log_linux_x64_gl_release.a" } }
     }
+} else when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    // Feed sokol_log_wasm_gl_debug.a or sokol_log_wasm_gl_release.a into emscripten compiler.
+    foreign import sokol_log_clib { "env.o" }
 } else {
     #panic("This OS is currently not supported")
 }
@@ -175,13 +180,13 @@ when ODIN_OS == .Windows {
 foreign sokol_log_clib {
     /*
         Plug this function into the 'logger.func' struct item when initializing any of the sokol
-        headers. For instance for sokol_audio.h it would loom like this:
+        headers. For instance for sokol_audio.h it would look like this:
 
         saudio_setup(&(saudio_desc){
             .logger = {
                 .func = slog_func
             }
-        })
+        });
     */
     func :: proc(tag: cstring, log_level: u32, log_item: u32, message: cstring, line_nr: u32, filename: cstring, user_data: rawptr)  ---
 }
